@@ -1,10 +1,10 @@
 import { buildModule } from "@nomicfoundation/hardhat-ignition/modules";
+import { HelperConfig } from "../helper/HelperConfig.js";
 
 export default buildModule("RaffleModule", (m) => {
-  const oneDayInMilliseconds = 24 * 60 * 60 * 1000;
-  const raffle = m.contract("Raffle", [1e18, oneDayInMilliseconds]);
+  const raffle = m.contract("Raffle", HelperConfig.getSepoliaConfig());
 
-  m.call(raffle, "", [5n]);
+  m.call(raffle, "getInterval");
 
   return { raffle };
 });
