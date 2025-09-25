@@ -42,6 +42,11 @@ const config: HardhatUserConfig = {
       url: "http://127.0.0.1:8545",
     },
   },
+  verify: {
+    etherscan: {
+      apiKey: configVariable("ETHERSCAN_API_KEY"),
+    },
+  },
 };
 
 export default config;

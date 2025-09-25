@@ -3,7 +3,7 @@ import { ChainlinkMockModule } from "./depedency/ChainlinkMockModule.js";
 
 export default buildModule("RaffleModule", (m) => {
   const entranceFee = m.getParameter("entranceFee", "100000000000000");
-  const interval = m.getParameter("interval", "86400");
+  const interval = m.getParameter("interval", "10");
   const keyHash = m.getParameter(
     "keyHash",
     "0x787d74caea10b2b357790d5b5247c2f63d1d91572a9846f780606e4d953677ae"
