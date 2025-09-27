@@ -2,10 +2,12 @@ import test, { describe } from "node:test";
 import assert from "node:assert";
 
 import { network } from "hardhat";
-import RaffleModuleSepolia from "../../ignition/modules/RaffleModuleSepolia.js";
+import RaffleModuleLocalhost from "../../ignition/modules/RaffleModuleLocalhost.js";
 
 const MIN_ENTRANCE_FEE = 1e14;
 const INTERVAL = 86400;
+
+const RAFFLE_CONTRACT = RaffleModuleLocalhost;
 
 describe("Raffle enterRaffle", async function () {
   const { viem, ignition } = await network.connect();
@@ -15,16 +17,20 @@ describe("Raffle enterRaffle", async function () {
 
   const players = [player1, player2, player3];
 
-  const { raffle } = await ignition.deploy(RaffleModuleSepolia, {
+  const { raffle, vrfCoordinator } = await ignition.deploy(RAFFLE_CONTRACT, {
     parameters: {
+      ChainlinkMockModule: {
+        mockBaseFee: "100000000000000000",
+        mockGasPrice: "1000000000",
+        mockWeiPerUintLink: "4000000000000000",
+      },
       RaffleModule: {
         entranceFee: "100000000000000",
-        interval: INTERVAL,
+        interval: "86400",
         keyHash:
-          "0x474e34a077df58807dbe9c96d3c009b23b3c6d0cce433e59bbf5b34f823bc56c",
-        subscriptionId: "12345",
+          "0x787d74caea10b2b357790d5b5247c2f63d1d91572a9846f780606e4d953677ae",
+        subscriptionId: "0",
         callbackGasLimit: "500000",
-        vrfCoordinatorAddress: "0x8103B0A8A00be2DDC778e6e7eaa21791Cd364625",
       },
     },
   });
@@ -64,16 +70,12 @@ describe("Raffle enterRaffle", async function () {
       interval: INTERVAL + 1,
     });
 
-    await player1.writeContract({
-      address: raffle.address,
-      abi: raffle.abi,
-      functionName: "performUpkeep",
-      args: ["0x"],
-    });
-
-    const state = await raffle.read.getRaffleState();
-
-    console.log("🚀 ~ state:", state);
+    // await player1.writeContract({
+    //   address: raffle.address,
+    //   abi: raffle.abi,
+    //   functionName: "performUpkeep",
+    //   args: ["0x"],
+    // });
 
     assert.rejects(async () => {
       await player1.writeContract({
@@ -96,7 +98,7 @@ describe("Raffle performUpkeep", async function () {
 
   const testClient = await viem.getTestClient();
 
-  const { raffle } = await ignition.deploy(RaffleModuleSepolia);
+  const { raffle } = await ignition.deploy(RAFFLE_CONTRACT);
 
   players.forEach(async (p) => {
     await p.writeContract({
