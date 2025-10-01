@@ -12,6 +12,7 @@
     "viem": "^2.30.0"
   },
   "dependencies": {
-    "@chainlink/contracts": "1.4.0"
+    "@chainlink/contracts": "1.4.0",
+    "solmate": "^6.8.0"
   }
 }

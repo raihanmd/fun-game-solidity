@@ -77,6 +77,8 @@ describe("Raffle enterRaffle", async function () {
     //   args: ["0x"],
     // });
 
+    // await vrfCoordinator.write.fulfillRandomWords()
+
     assert.rejects(async () => {
       await player1.writeContract({
         address: raffle.address,

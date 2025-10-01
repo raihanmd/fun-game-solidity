@@ -1,4 +1,4 @@
 {
-  "ChainlinkMockModule#VRFCoordinatorV2_5Mock": "0xc15045F7B357149d5b887BD8a58A69B7af780181",
-  "RaffleModule#Raffle": "0x8912d6e049C225850D5D83EE3bA0D5b579eccEc4"
+  "ChainlinkMockModule#VRFCoordinatorV2_5Mock": "0x5FbDB2315678afecb367f032d93F642f64180aa3",
+  "RaffleModule#Raffle": "0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9"
 }

@@ -1,7 +1,9 @@
 import { buildModule } from "@nomicfoundation/hardhat-ignition/modules";
 import { ChainlinkMockModule } from "./depedency/ChainlinkMockModule.js";
+import { LinkTokenModule } from "./depedency/LinkTokenModule.js";
+import { FUND_AMOUNT } from "./depedency/_const.js";
 
-export default buildModule("RaffleModule", (m) => {
+export default buildModule("RaffleModuleLocalhost", (m) => {
   const entranceFee = m.getParameter("entranceFee", "100000000000000");
   const interval = m.getParameter("interval", "86400");
   const keyHash = m.getParameter(
@@ -11,12 +13,24 @@ export default buildModule("RaffleModule", (m) => {
   const callbackGasLimit = m.getParameter("callbackGasLimit", "500000");
 
   const { vrfCoordinator } = m.useModule(ChainlinkMockModule);
+  const { linkToken } = m.useModule(LinkTokenModule);
 
-  const subscriptionId = m.call(vrfCoordinator, "createSubscription", []);
+  const createSubscriptionFuture = m.call(
+    vrfCoordinator,
+    "createSubscription",
+    []
+  );
+
+  const subId = m.readEventArgument(
+    createSubscriptionFuture,
+    "SubscriptionCreated",
+    "subId"
+  );
 
   m.call(vrfCoordinator, "fundSubscription", [
-    subscriptionId.value,
-    "1000000000000000000",
+    subId,
+    FUND_AMOUNT.toString(),
+    linkToken,
   ]);
 
   const raffle = m.contract("Raffle", [
@@ -24,7 +38,7 @@ export default buildModule("RaffleModule", (m) => {
     interval,
     vrfCoordinator,
     keyHash,
-    subscriptionId.value,
+    subId,
     callbackGasLimit,
   ]);
 
