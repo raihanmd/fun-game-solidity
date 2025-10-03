@@ -27,17 +27,17 @@ contract DeployRaffle is Script {
 
         vm.startBroadcast(config.account);
         Raffle raffle = new Raffle(
-            config.subscriptionId,
-            config.gasLane,
-            config.automationUpdateInterval,
             config.raffleEntranceFee,
-            config.callbackGasLimit,
-            config.vrfCoordinatorV2_5
+            config.automationUpdateInterval,
+            config.vrfCoordinatorV2_5,
+            config.gasLane,
+            config.subscriptionId,
+            config.callbackGasLimit
         );
         vm.stopBroadcast();
 
         // We already have a broadcast in here
-        addConsumer.addConsumer(address(raffle), config.vrfCoordinatorV2_5, config.subscriptionId, config.account);
+        addConsumer.addConsumer(address(raffle), config.vrfCoordinatorV2_5, config.subscriptionId);
         return (raffle, helperConfig);
     }
 }
