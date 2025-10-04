@@ -190,10 +190,17 @@ contract RaffleTest is Test, CodeConstants {
     /***************************************************************
                             FULL FULL RANDOM WORDS
     ***************************************************************/
+    modifier skipFork() {
+        if (block.chainid != LOCAL_CHAIN_ID) {
+            return;
+        }
+        _;
+    }
+
     // * NOTE foundry auto fuzz this test for us!
     function testFullFillRandomWordsCanOnlyBeCalledAfterPerformUpkeep(
         uint256 randomReqId
-    ) public raffleEnter {
+    ) public raffleEnter skipFork {
         vm.expectRevert(VRFCoordinatorV2_5Mock.InvalidRequest.selector);
         VRFCoordinatorV2_5Mock(vrfCoordinatorV2_5).fulfillRandomWords(
             randomReqId,
@@ -204,6 +211,7 @@ contract RaffleTest is Test, CodeConstants {
     function testFullFillRandomWorsPicksWinnerResetsStateAndSendMoney()
         public
         raffleEnter
+        skipFork
     {
         uint256 newPlayer = 3;
         uint256 startingIndex = 1;

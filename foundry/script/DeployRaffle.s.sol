@@ -8,18 +8,26 @@ import {AddConsumer, CreateSubscription, FundSubscription} from "./Interactions.
 
 contract DeployRaffle is Script {
     function run() external returns (Raffle, HelperConfig) {
-        HelperConfig helperConfig = new HelperConfig(); // This comes with our mocks!
+        HelperConfig helperConfig = new HelperConfig();
         AddConsumer addConsumer = new AddConsumer();
         HelperConfig.NetworkConfig memory config = helperConfig.getConfig();
 
         if (config.subscriptionId == 0) {
             CreateSubscription createSubscription = new CreateSubscription();
-            (config.subscriptionId, config.vrfCoordinatorV2_5) =
-                createSubscription.createSubscription(config.vrfCoordinatorV2_5, config.account);
+            (
+                config.subscriptionId,
+                config.vrfCoordinatorV2_5
+            ) = createSubscription.createSubscription(
+                config.vrfCoordinatorV2_5,
+                config.account
+            );
 
             FundSubscription fundSubscription = new FundSubscription();
             fundSubscription.fundSubscription(
-                config.vrfCoordinatorV2_5, config.subscriptionId, config.link, config.account
+                config.vrfCoordinatorV2_5,
+                config.subscriptionId,
+                config.link,
+                config.account
             );
 
             helperConfig.setConfig(block.chainid, config);
@@ -37,7 +45,12 @@ contract DeployRaffle is Script {
         vm.stopBroadcast();
 
         // We already have a broadcast in here
-        addConsumer.addConsumer(address(raffle), config.vrfCoordinatorV2_5, config.subscriptionId);
+        addConsumer.addConsumer(
+            address(raffle),
+            config.vrfCoordinatorV2_5,
+            config.subscriptionId,
+            config.account
+        );
         return (raffle, helperConfig);
     }
 }
